@@ -25,7 +25,7 @@ import org.springframework.lang.Nullable;
 /**
  * A BeanDefinition describes a bean instance, which has property values,
  * constructor argument values, and further information supplied by
- * concrete implementations.
+ * concrete implementations. 描述 Bean 实例，它具有属性值、构造函数参数值以及由具体实现提供的更多信息
  *
  * <p>This is just a minimal interface: The main intention is to allow a
  * {@link BeanFactoryPostProcessor} to introspect and modify property values
@@ -138,13 +138,13 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	/**
 	 * Set whether this bean should be lazily initialized.
 	 * <p>If {@code false}, the bean will get instantiated on startup by bean
-	 * factories that perform eager initialization of singletons.
+	 * factories that perform eager initialization of singletons. {@link @Lazy} 注解中对应的属性值
 	 */
 	void setLazyInit(boolean lazyInit);
 
 	/**
 	 * Return whether this bean should be lazily initialized, i.e. not
-	 * eagerly instantiated on startup. Only applicable to a singleton bean.
+	 * eagerly instantiated on startup. Only applicable to a singleton bean. 是否延迟加载
 	 */
 	boolean isLazyInit();
 

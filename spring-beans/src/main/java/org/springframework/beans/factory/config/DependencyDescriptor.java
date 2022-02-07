@@ -16,19 +16,8 @@
 
 package org.springframework.beans.factory.config;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Optional;
-
 import kotlin.reflect.KProperty;
 import kotlin.reflect.jvm.ReflectJvmMapping;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.InjectionPoint;
@@ -41,10 +30,20 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Optional;
+
 /**
- * Descriptor for a specific dependency that is about to be injected.
+ * Descriptor for a specific dependency that is about to be injected. 即将注入的特定依赖项的描述符
  * Wraps a constructor parameter, a method parameter or a field,
- * allowing unified access to their metadata.
+ * allowing unified access to their metadata. 包装构造函数参数、方法参数或字段，允许对其元数据进行统一访问
  *
  * @author Juergen Hoeller
  * @since 2.5
@@ -52,22 +51,22 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 public class DependencyDescriptor extends InjectionPoint implements Serializable {
 
-	private final Class<?> declaringClass;
+	private final Class<?> declaringClass; // 当前申明的注入的描述符，它有一个被注入的容器，这个容器就称为申明的这个类
 
 	@Nullable
-	private String methodName;
+	private String methodName; // 方法注入，可以为空
 
 	@Nullable
-	private Class<?>[] parameterTypes;
+	private Class<?>[] parameterTypes; // 构造器注入，可以为空
 
 	private int parameterIndex;
 
 	@Nullable
-	private String fieldName;
+	private String fieldName; // 字段注入，可以为空
 
-	private final boolean required;
+	private final boolean required; // 对应 @Autowired 注解中的 required 字段
 
-	private final boolean eager;
+	private final boolean eager; // 是否实时/饥饿的，对应 @Lazy。 如果 Lazy=true，则 eager = false，反之，eager = true
 
 	private int nestingLevel = 1;
 
@@ -78,14 +77,15 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	private transient volatile ResolvableType resolvableType;
 
 	@Nullable
-	private transient volatile TypeDescriptor typeDescriptor;
+	private transient volatile TypeDescriptor typeDescriptor; // ；类型描述
 
 
 	/**
 	 * Create a new descriptor for a method or constructor parameter.
 	 * Considers the dependency as 'eager'.
+	 *
 	 * @param methodParameter the MethodParameter to wrap
-	 * @param required whether the dependency is required
+	 * @param required        whether the dependency is required
 	 */
 	public DependencyDescriptor(MethodParameter methodParameter, boolean required) {
 		this(methodParameter, required, true);
@@ -93,10 +93,11 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 
 	/**
 	 * Create a new descriptor for a method or constructor parameter.
+	 *
 	 * @param methodParameter the MethodParameter to wrap
-	 * @param required whether the dependency is required
-	 * @param eager whether this dependency is 'eager' in the sense of
-	 * eagerly resolving potential target beans for type matching
+	 * @param required        whether the dependency is required
+	 * @param eager           whether this dependency is 'eager' in the sense of
+	 *                        eagerly resolving potential target beans for type matching
 	 */
 	public DependencyDescriptor(MethodParameter methodParameter, boolean required, boolean eager) {
 		super(methodParameter);
@@ -115,7 +116,8 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	/**
 	 * Create a new descriptor for a field.
 	 * Considers the dependency as 'eager'.
-	 * @param field the field to wrap
+	 *
+	 * @param field    the field to wrap
 	 * @param required whether the dependency is required
 	 */
 	public DependencyDescriptor(Field field, boolean required) {
@@ -124,10 +126,11 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 
 	/**
 	 * Create a new descriptor for a field.
-	 * @param field the field to wrap
+	 *
+	 * @param field    the field to wrap
 	 * @param required whether the dependency is required
-	 * @param eager whether this dependency is 'eager' in the sense of
-	 * eagerly resolving potential target beans for type matching
+	 * @param eager    whether this dependency is 'eager' in the sense of
+	 *                 eagerly resolving potential target beans for type matching
 	 */
 	public DependencyDescriptor(Field field, boolean required, boolean eager) {
 		super(field);
@@ -140,6 +143,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 
 	/**
 	 * Copy constructor.
+	 *
 	 * @param original the original descriptor to create a copy from
 	 */
 	public DependencyDescriptor(DependencyDescriptor original) {
@@ -174,8 +178,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 					(KotlinDetector.isKotlinReflectPresent() &&
 							KotlinDetector.isKotlinType(this.field.getDeclaringClass()) &&
 							KotlinDelegate.isNullable(this.field)));
-		}
-		else {
+		} else {
 			return !obtainMethodParameter().isOptional();
 		}
 	}
@@ -207,10 +210,11 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * throwing a {@link NoUniqueBeanDefinitionException}.
 	 * <p>Subclasses may override this to select one of the instances or
 	 * to opt out with no result at all through returning {@code null}.
-	 * @param type the requested bean type
+	 *
+	 * @param type          the requested bean type
 	 * @param matchingBeans a map of bean names and corresponding bean
-	 * instances which have been pre-selected for the given type
-	 * (qualifiers etc already applied)
+	 *                      instances which have been pre-selected for the given type
+	 *                      (qualifiers etc already applied)
 	 * @return a bean instance to proceed with, or {@code null} for none
 	 * @throws BeansException in case of the not-unique scenario being fatal
 	 * @since 5.1
@@ -225,10 +229,11 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * throwing a {@link NoUniqueBeanDefinitionException}.
 	 * <p>Subclasses may override this to select one of the instances or
 	 * to opt out with no result at all through returning {@code null}.
-	 * @param type the requested bean type
+	 *
+	 * @param type          the requested bean type
 	 * @param matchingBeans a map of bean names and corresponding bean
-	 * instances which have been pre-selected for the given type
-	 * (qualifiers etc already applied)
+	 *                      instances which have been pre-selected for the given type
+	 *                      (qualifiers etc already applied)
 	 * @return a bean instance to proceed with, or {@code null} for none
 	 * @throws BeansException in case of the not-unique scenario being fatal
 	 * @since 4.3
@@ -247,6 +252,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * method before going into the regular type matching algorithm across all beans.
 	 * Subclasses may override this method to improve resolution performance based on
 	 * pre-cached information while still receiving {@link InjectionPoint} exposure etc.
+	 *
 	 * @param beanFactory the associated factory
 	 * @return the shortcut result if any, or {@code null} if none
 	 * @throws BeansException if the shortcut could not be obtained
@@ -262,13 +268,14 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * algorithm for this dependency, to a bean instance from the given factory.
 	 * <p>The default implementation calls {@link BeanFactory#getBean(String)}.
 	 * Subclasses may provide additional arguments or other customizations.
-	 * @param beanName the bean name, as a candidate result for this dependency
+	 *
+	 * @param beanName     the bean name, as a candidate result for this dependency
 	 * @param requiredType the expected type of the bean (as an assertion)
-	 * @param beanFactory the associated factory
+	 * @param beanFactory  the associated factory
 	 * @return the bean instance (never {@code null})
 	 * @throws BeansException if the bean could not be obtained
-	 * @since 4.3.2
 	 * @see BeanFactory#getBean(String)
+	 * @since 4.3.2
 	 */
 	public Object resolveCandidate(String beanName, Class<?> requiredType, BeanFactory beanFactory)
 			throws BeansException {
@@ -292,6 +299,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * Optionally set the concrete class that contains this dependency.
 	 * This may differ from the class that declares the parameter/field in that
 	 * it may be a subclass thereof, potentially substituting type variables.
+	 *
 	 * @since 4.0
 	 */
 	public void setContainingClass(Class<?> containingClass) {
@@ -304,6 +312,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 
 	/**
 	 * Build a {@link ResolvableType} object for the wrapped parameter/field.
+	 *
 	 * @since 4.0
 	 */
 	public ResolvableType getResolvableType() {
@@ -319,6 +328,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 
 	/**
 	 * Build a {@link TypeDescriptor} object for the wrapped parameter/field.
+	 *
 	 * @since 5.1.4
 	 */
 	public TypeDescriptor getTypeDescriptor() {
@@ -337,6 +347,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * <p>This is {@code false} by default but may be overridden to return {@code true} in order
 	 * to suggest to an {@link org.springframework.beans.factory.support.AutowireCandidateResolver}
 	 * that a fallback match is acceptable as well.
+	 *
 	 * @since 4.0
 	 */
 	public boolean fallbackMatchAllowed() {
@@ -345,8 +356,9 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 
 	/**
 	 * Return a variant of this descriptor that is intended for a fallback match.
-	 * @since 4.0
+	 *
 	 * @see #fallbackMatchAllowed()
+	 * @since 4.0
 	 */
 	public DependencyDescriptor forFallbackMatch() {
 		return new DependencyDescriptor(this) {
@@ -371,6 +383,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 
 	/**
 	 * Determine the name of the wrapped parameter/field.
+	 *
 	 * @return the declared name (never {@code null})
 	 */
 	@Nullable
@@ -380,6 +393,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 
 	/**
 	 * Determine the declared (non-generic) type of the wrapped parameter/field.
+	 *
 	 * @return the declared type (never {@code null})
 	 */
 	public Class<?> getDependencyType() {
@@ -394,20 +408,17 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 				}
 				if (type instanceof Class) {
 					return (Class<?>) type;
-				}
-				else if (type instanceof ParameterizedType) {
+				} else if (type instanceof ParameterizedType) {
 					Type arg = ((ParameterizedType) type).getRawType();
 					if (arg instanceof Class) {
 						return (Class<?>) arg;
 					}
 				}
 				return Object.class;
-			}
-			else {
+			} else {
 				return this.field.getType();
 			}
-		}
-		else {
+		} else {
 			return obtainMethodParameter().getNestedParameterType();
 		}
 	}
@@ -444,13 +455,11 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 		try {
 			if (this.fieldName != null) {
 				this.field = this.declaringClass.getDeclaredField(this.fieldName);
-			}
-			else {
+			} else {
 				if (this.methodName != null) {
 					this.methodParameter = new MethodParameter(
 							this.declaringClass.getDeclaredMethod(this.methodName, this.parameterTypes), this.parameterIndex);
-				}
-				else {
+				} else {
 					this.methodParameter = new MethodParameter(
 							this.declaringClass.getDeclaredConstructor(this.parameterTypes), this.parameterIndex);
 				}
@@ -458,8 +467,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 					this.methodParameter = this.methodParameter.nested();
 				}
 			}
-		}
-		catch (Throwable ex) {
+		} catch (Throwable ex) {
 			throw new IllegalStateException("Could not find original class structure", ex);
 		}
 	}

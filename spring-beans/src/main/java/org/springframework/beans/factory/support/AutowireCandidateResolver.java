@@ -86,7 +86,7 @@ public interface AutowireCandidateResolver {
 
 	/**
 	 * Build a proxy for lazy resolution of the actual dependency target,
-	 * if demanded by the injection point.
+	 * if demanded by the injection point. 如果代理点需要，为实际依赖目标的延迟解析构建代理
 	 * <p>The default implementation simply returns {@code null}.
 	 * @param descriptor the descriptor for the target method parameter or field
 	 * @param beanName the name of the bean that contains the injection point
