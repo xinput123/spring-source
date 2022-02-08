@@ -245,7 +245,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		final String beanName = transformedBeanName(name);
 		Object bean;
 
-		// Eagerly check singleton cache for manually registered singletons.
+		// Eagerly check singleton cache for manually registered singletons. 先判断是否是单体对象bean，如果是，直接返回
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
@@ -260,7 +260,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		}
 
-		else {
+		else { // 如果是 BeanDefinition, 需要激活生命周期之类的工作，较复杂
 			// Fail if we're already creating this bean instance:
 			// We're assumably within a circular reference.
 			if (isPrototypeCurrentlyInCreation(beanName)) {

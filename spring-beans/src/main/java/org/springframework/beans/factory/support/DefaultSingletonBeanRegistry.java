@@ -70,10 +70,10 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
 
-	/** Cache of singleton objects: bean name to bean instance. */
+	/** Cache of singleton objects: bean name to bean instance. 单体对象的缓存 */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
-	/** Cache of singleton factories: bean name to ObjectFactory. */
+	/** Cache of singleton factories: bean name to ObjectFactory. 单例工厂的缓存，和 singletonObjects 互斥*/
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
 	/** Cache of early singleton objects: bean name to bean instance. */
@@ -133,7 +133,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	protected void addSingleton(String beanName, Object singletonObject) {
 		synchronized (this.singletonObjects) {
 			this.singletonObjects.put(beanName, singletonObject);
-			this.singletonFactories.remove(beanName);
+			this.singletonFactories.remove(beanName); // singletonObjects 和 singletonFactories 互斥
 			this.earlySingletonObjects.remove(beanName);
 			this.registeredSingletons.add(beanName);
 		}
