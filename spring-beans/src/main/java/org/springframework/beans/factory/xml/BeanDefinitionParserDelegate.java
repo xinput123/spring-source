@@ -412,17 +412,17 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
-		String id = ele.getAttribute(ID_ATTRIBUTE);
-		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE);
+		String id = ele.getAttribute(ID_ATTRIBUTE); // 获取 bean id
+		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE); // 获取 bean name
 
 		List<String> aliases = new ArrayList<>();
-		if (StringUtils.hasLength(nameAttr)) {
+		if (StringUtils.hasLength(nameAttr)) { // 将 name 属性的定义按照 “逗号、分号、空格” 切分，形成一个 别名列表数组，如果你不定义 name 属性的话，就是空的了
 			String[] nameArr = StringUtils.tokenizeToStringArray(nameAttr, MULTI_VALUE_ATTRIBUTE_DELIMITERS);
 			aliases.addAll(Arrays.asList(nameArr));
 		}
 
 		String beanName = id;
-		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) {
+		if (!StringUtils.hasText(beanName) && !aliases.isEmpty()) { // 如果没有指定id, 那么用别名列表的第一个名字作为beanName
 			beanName = aliases.remove(0);
 			if (logger.isTraceEnabled()) {
 				logger.trace("No XML 'id' specified - using '" + beanName +
@@ -433,10 +433,12 @@ public class BeanDefinitionParserDelegate {
 		if (containingBean == null) {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-
+		// 根据 <bean ...>...</bean> 中的配置创建 BeanDefinition，然后把配置中的信息都设置到实例中,
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
+
+		// 到这里，整个 <bean /> 标签就算解析结束了，一个 BeanDefinition 就形成了
 		if (beanDefinition != null) {
-			if (!StringUtils.hasText(beanName)) {
+			if (!StringUtils.hasText(beanName)) { // 如果都没有设置 id 和 name，那么此时的 beanName 就会为 null，进入下面这块代码产生
 				try {
 					if (containingBean != null) {
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
@@ -451,7 +453,7 @@ public class BeanDefinitionParserDelegate {
 						if (beanClassName != null &&
 								beanName.startsWith(beanClassName) && beanName.length() > beanClassName.length() &&
 								!this.readerContext.getRegistry().isBeanNameInUse(beanClassName)) {
-							aliases.add(beanClassName);
+							aliases.add(beanClassName); // 把 beanClassName 设置为 Bean 的别名
 						}
 					}
 					if (logger.isTraceEnabled()) {
@@ -465,7 +467,7 @@ public class BeanDefinitionParserDelegate {
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
-			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
+			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);// 返回 BeanDefinitionHolder
 		}
 
 		return null;
@@ -493,6 +495,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 根据配置创建 BeanDefinition 实例
 	 * Parse the bean definition itself, without regard to name or aliases. May return
 	 * {@code null} if problems occurred during the parsing of the bean definition.
 	 */
@@ -512,18 +515,18 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
-			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
-
+			AbstractBeanDefinition bd = createBeanDefinition(className, parent); // 创建 BeanDefinition，然后设置类信息
+			// 设置 BeanDefinition 的一堆属性，这些属性定义在 AbstractBeanDefinition 中
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
 			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
+			// 下面一堆是解析 <bean>......</bean> 内部的子元素，解析出来以后的信息都放到 bd 的属性中
+			parseMetaElements(ele, bd); // 解析 <meta />
+			parseLookupOverrideSubElements(ele, bd.getMethodOverrides()); // 解析 <lookup-method />
+			parseReplacedMethodSubElements(ele, bd.getMethodOverrides()); // 解析 <replaced-method />
 
-			parseMetaElements(ele, bd);
-			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
-			parseReplacedMethodSubElements(ele, bd.getMethodOverrides());
-
-			parseConstructorArgElements(ele, bd);
-			parsePropertyElements(ele, bd);
-			parseQualifierElements(ele, bd);
+			parseConstructorArgElements(ele, bd); // 解析 <constructor-arg />
+			parsePropertyElements(ele, bd); // 解析 <property />
+			parseQualifierElements(ele, bd); // 解析 <qualifier />
 
 			bd.setResource(this.readerContext.getResource());
 			bd.setSource(extractSource(ele));
