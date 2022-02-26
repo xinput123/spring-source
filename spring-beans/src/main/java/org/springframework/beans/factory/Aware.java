@@ -33,5 +33,23 @@ package org.springframework.beans.factory;
  * @since 3.1
  */
 public interface Aware {
-
+	/**
+	 * Aware 回调这个阶段也有差异
+	 *
+	 * 如果是普通的 BeanFactory 的话，那么 Aware 回调其实只有三个
+	 * BeanNameAware、BeanClassLoaderAware、BeanFactoryAware
+	 * 实现方法
+	 *  AbstractAutowireCapableBeanFactory#invokeAwareMethods
+	 *
+	 * 如果是和 ApplicationContext 打交道，则对多了以下几个
+	 * EnvironmentAware、
+	 * EmbeddedValueResolverAware、
+	 * ResourceLoaderAware、
+	 * ApplicationEventPublisherAware、
+	 * MessageSourceAware、
+	 * ApplicationContextAware
+	 *
+	 * 实现方法
+	 * ApplicationContextAwareProcessor#postProcessBeforeInitialization
+	 */
 }

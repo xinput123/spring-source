@@ -147,7 +147,7 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 * given the name "test" in a context, the namespace used by the servlet will
 	 * resolve to "test-servlet".
 	 */
-	public static final String DEFAULT_NAMESPACE_SUFFIX = "-servlet";
+	public static final String DEFAULT_NAMESPACE_SUFFIX = "-servlet"; // 默认后缀名
 
 	/**
 	 * Default context class for FrameworkServlet.

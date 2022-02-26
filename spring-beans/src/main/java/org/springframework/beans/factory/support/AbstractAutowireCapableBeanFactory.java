@@ -546,9 +546,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
 			throws BeanCreationException {
 
-		// Instantiate the bean.
+		// Instantiate the bean. BeanWrapper 其实是我们的实例包装的对象
 		BeanWrapper instanceWrapper = null;
-		if (mbd.isSingleton()) {
+		if (mbd.isSingleton()) { // 是否是单例的
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {// 说明不是 FactoryBean，这里实例化 Bean
@@ -1807,6 +1807,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		return wrappedBean;
 	}
 
+	// 执行 Aware 接口的回调，如果一个Spring Bean 实现了 BeanNameAware、BeanClassLoaderAware、BeanFactoryAware 接口
+	// 并且 Aware 的顺序是按照 BeanNameAware -> BeanClassLoaderAware -> BeanFactoryAware
 	private void invokeAwareMethods(final String beanName, final Object bean) {
 		if (bean instanceof Aware) {
 			if (bean instanceof BeanNameAware) {
