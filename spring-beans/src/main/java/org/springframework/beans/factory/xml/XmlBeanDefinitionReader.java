@@ -56,6 +56,8 @@ import org.springframework.util.xml.XmlValidationModeDetector;
  * Delegates the actual XML document reading to an implementation
  * of the {@link BeanDefinitionDocumentReader} interface.
  *
+ * 应用上下文的xml配置解析
+ *
  * <p>Typically applied to a
  * {@link org.springframework.beans.factory.support.DefaultListableBeanFactory}
  * or a {@link org.springframework.context.support.GenericApplicationContext}.

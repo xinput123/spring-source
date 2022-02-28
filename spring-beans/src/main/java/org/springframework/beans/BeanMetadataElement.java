@@ -28,6 +28,7 @@ import org.springframework.lang.Nullable;
 public interface BeanMetadataElement {
 
 	/**
+	 * BeanDefinition 来自于哪里，一般来说是用于扩展相应功能
 	 * Return the configuration source {@code Object} for this metadata element
 	 * (may be {@code null}).
 	 */
