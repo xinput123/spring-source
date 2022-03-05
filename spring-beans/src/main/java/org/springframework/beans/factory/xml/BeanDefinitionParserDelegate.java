@@ -1376,6 +1376,12 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * Extensible XML 扩展原理
+	 * 1、获取 namespace
+	 * 2、通过 namespace 解析 NamespaceHandler
+	 * 3、构造 ParserContext
+	 * 4、解析元素，获取 BeanDefinition
+	 *
 	 * Parse a custom element (outside of the default namespace).
 	 * @param ele the element to parse
 	 * @param containingBd the containing bean definition (if any)
