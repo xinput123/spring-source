@@ -42,18 +42,23 @@ import org.springframework.util.ObjectUtils;
 @SuppressWarnings("serial")
 public class PropertyValue extends BeanMetadataAttributeAccessor implements Serializable {
 
+	// 不变的名称
 	private final String name;
 
+	// 不变的值，原始值
 	@Nullable
 	private final Object value;
 
+	// 是不是可选的
 	private boolean optional = false;
 
 	private boolean converted = false;
 
+	// 转换后的值
 	@Nullable
 	private Object convertedValue;
 
+	// 是否需要转换
 	/** Package-visible field that indicates whether conversion is necessary. */
 	@Nullable
 	volatile Boolean conversionNecessary;

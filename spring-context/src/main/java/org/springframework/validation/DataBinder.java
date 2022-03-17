@@ -121,42 +121,55 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 */
 	protected static final Log logger = LogFactory.getLog(DataBinder.class);
 
+	// 关联的目标 Bean，就是简单的Java对象 POJO
 	@Nullable
 	private final Object target;
 
+	// 目标 Bean 名称
 	private final String objectName;
 
+	// 属性榜单结果
 	@Nullable
 	private AbstractPropertyBindingResult bindingResult;
 
+	// 类型转换器
 	@Nullable
 	private SimpleTypeConverter typeConverter;
 
+	// 是否忽略未知字段
 	private boolean ignoreUnknownFields = true;
 
+	// 是否忽略非法字段
 	private boolean ignoreInvalidFields = false;
 
+	// 是否自动增加嵌套路径
 	private boolean autoGrowNestedPaths = true;
 
 	private int autoGrowCollectionLimit = DEFAULT_AUTO_GROW_COLLECTION_LIMIT;
 
+	// 绑定字段白名单
 	@Nullable
 	private String[] allowedFields;
 
+	// 绑定字段黑名单
 	@Nullable
 	private String[] disallowedFields;
 
+	// 必须绑定字段
 	@Nullable
 	private String[] requiredFields;
 
+	// 类型转换服务
 	@Nullable
 	private ConversionService conversionService;
 
+	// 校验错误文案 Code 处理器
 	@Nullable
 	private MessageCodesResolver messageCodesResolver;
 
 	private BindingErrorProcessor bindingErrorProcessor = new DefaultBindingErrorProcessor();
 
+	// 关联的 Bean Validator 实例集合
 	private final List<Validator> validators = new ArrayList<>();
 
 
@@ -723,7 +736,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * @param pvs property values to bind
 	 * @see #doBind(org.springframework.beans.MutablePropertyValues)
 	 */
-	public void bind(PropertyValues pvs) {
+	public void bind(PropertyValues pvs) { // 绑定方法
 		MutablePropertyValues mpvs = (pvs instanceof MutablePropertyValues ?
 				(MutablePropertyValues) pvs : new MutablePropertyValues(pvs));
 		doBind(mpvs);
