@@ -45,7 +45,7 @@ import org.springframework.util.Assert;
  * @see ConverterFactory
  * @see ConditionalConverter
  */
-public interface GenericConverter {
+public interface GenericConverter { // 通用类型转换接口
 
 	/**
 	 * Return the source and target types that this converter can convert between.
@@ -70,7 +70,7 @@ public interface GenericConverter {
 	/**
 	 * Holder for a source-to-target class pair.
 	 */
-	final class ConvertiblePair {
+	final class ConvertiblePair { // 配对类型
 
 		private final Class<?> sourceType;
 

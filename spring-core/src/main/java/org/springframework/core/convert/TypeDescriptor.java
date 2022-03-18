@@ -50,7 +50,7 @@ import org.springframework.util.ObjectUtils;
  * @see ConversionService#convert(Object, TypeDescriptor, TypeDescriptor)
  */
 @SuppressWarnings("serial")
-public class TypeDescriptor implements Serializable {
+public class TypeDescriptor implements Serializable { // 类型描述
 
 	private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];
 

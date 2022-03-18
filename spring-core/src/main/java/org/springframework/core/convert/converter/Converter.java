@@ -31,7 +31,7 @@ import org.springframework.lang.Nullable;
  * @param <T> the target type
  */
 @FunctionalInterface
-public interface Converter<S, T> {
+public interface Converter<S, T> { // 类型转换接口
 
 	/**
 	 * Convert the source object of type {@code S} to target type {@code T}.
