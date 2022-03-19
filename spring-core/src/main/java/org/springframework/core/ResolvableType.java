@@ -81,7 +81,7 @@ import org.springframework.util.StringUtils;
  * @see ResolvableTypeProvider
  */
 @SuppressWarnings("serial")
-public class ResolvableType implements Serializable {
+public class ResolvableType implements Serializable { // 泛型优化实现
 
 	/**
 	 * {@code ResolvableType} returned when no value is available. {@code NONE} is used
