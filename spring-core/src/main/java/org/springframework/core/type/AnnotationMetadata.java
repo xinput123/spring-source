@@ -38,7 +38,7 @@ import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
  * @see org.springframework.core.type.classreading.MetadataReader#getAnnotationMetadata()
  * @see AnnotatedTypeMetadata
  */
-public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata {
+public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata { // 注解元信息
 
 	/**
 	 * Get the fully qualified class names of all annotation types that

@@ -28,7 +28,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.core.type.classreading.MetadataReader#getClassMetadata()
  * @see AnnotationMetadata
  */
-public interface ClassMetadata {
+public interface ClassMetadata { // 类元信息
 
 	/**
 	 * Return the name of the underlying class.

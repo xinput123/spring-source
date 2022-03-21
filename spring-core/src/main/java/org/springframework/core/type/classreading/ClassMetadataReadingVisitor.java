@@ -47,7 +47,7 @@ import org.springframework.util.StringUtils;
  * and related classes for internal use within the framework.
  */
 @Deprecated
-class ClassMetadataReadingVisitor extends ClassVisitor implements ClassMetadata {
+class ClassMetadataReadingVisitor extends ClassVisitor implements ClassMetadata { // ASM 实现
 
 	private String className = "";
 

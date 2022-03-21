@@ -103,6 +103,9 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 		return bean;
 	}
 
+	// aware 回调顺序
+	// EnvironmentAware -> EmbeddedValueResolverAware -> ResourceLoaderAware ->
+	// ApplicationEventPublisherAware -> MessageSourceAware -> ApplicationContextAware
 	private void invokeAwareInterfaces(Object bean) {
 		if (bean instanceof EnvironmentAware) {
 			((EnvironmentAware) bean).setEnvironment(this.applicationContext.getEnvironment());
