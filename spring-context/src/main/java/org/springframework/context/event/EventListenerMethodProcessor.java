@@ -61,7 +61,7 @@ import org.springframework.util.CollectionUtils;
  * @see DefaultEventListenerFactory
  */
 public class EventListenerMethodProcessor
-		implements SmartInitializingSingleton, ApplicationContextAware, BeanFactoryPostProcessor {
+		implements SmartInitializingSingleton, ApplicationContextAware, BeanFactoryPostProcessor { // Spring 监听事件实现
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
