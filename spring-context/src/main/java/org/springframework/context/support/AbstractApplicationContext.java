@@ -525,7 +525,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// 设置 BeanFactory 的类加载器，添加几个 BeanPostProcessor，手动注册几个特殊的 bean
-			prepareBeanFactory(beanFactory);
+			prepareBeanFactory(beanFactory); // BeanFactory 准备阶段
 
 			try {
 				// 允许在上下文子类中对 bean 工厂进行后处理。 这里需要知道 BeanFactoryPostProcessor 这个知识点，
@@ -533,15 +533,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// 这里是提供给子类的扩展点，到这里的时候，所有的 Bean 都加载、注册完成了，但是都还没有初始化
 				// 具体的子类可以在这步的时候添加一些特殊的 BeanFactoryPostProcessor 的实现类或做点什么事
-				postProcessBeanFactory(beanFactory);
+				postProcessBeanFactory(beanFactory); // BeanFactory 后置处理阶段 : 第一步
 
 				// 调用 BeanFactoryPostProcessor 各个实现类的 postProcessBeanFactory(factory) 方法
-				invokeBeanFactoryPostProcessors(beanFactory);
+				invokeBeanFactoryPostProcessors(beanFactory); // BeanFactory 后置处理阶段 : 第二步
 
 				// 注册 BeanPostProcessor 的实现类，注意看和 BeanFactoryPostProcessor 的区别
 				// 此接口两个方法: postProcessBeforeInitialization 和 postProcessAfterInitialization
 				// 两个方法分别在 Bean 初始化之前和初始化之后得到执行。注意，到这里 Bean 还没初始化
-				registerBeanPostProcessors(beanFactory);
+				registerBeanPostProcessors(beanFactory); // BeanFactory 注册 BeanPostProcessors 阶段
 
 				// 初始化当前 ApplicationContext 的 MessageSource
 				initMessageSource();
@@ -652,7 +652,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// 设置 BeanFactory 的类加载器，我们知道 BeanFactory 需要加载类，也就需要类加载器，这里设置为加载当前 ApplicationContext 类的类加载器
-		beanFactory.setBeanClassLoader(getClassLoader());
+		beanFactory.setBeanClassLoader(getClassLoader()); // 关联 ClassLoader
 		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader())); // 设置 BeanExpressionResolver
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
@@ -667,6 +667,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);
 		beanFactory.ignoreDependencyInterface(MessageSourceAware.class);
 		beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
+		// beanFactory.addBeanPostProcessor 和 beanFactory.ignoreDependencyInterface 是配合使用的，因为 ApplicationContextAwareProcessor
+		// 会回调这6个接口，见 ApplicationContextAwareProcessor#invokeAwareInterfaces
 
 		// 下面4个类注册到了 DefaultListableBeanFactory#resolvableDependencies中。
 		// 注意: 调用 registerResolvableDependency 注入，不能通过依赖查询获取
@@ -706,7 +708,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * BeanPostProcessors etc in certain ApplicationContext implementations.
 	 * @param beanFactory the bean factory used by the application context
 	 */
-	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
+	protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) { // BeanFactory 后置处理阶段
 	}
 
 	/**
@@ -895,21 +897,21 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * onRefresh() method and publishing the
 	 * {@link org.springframework.context.event.ContextRefreshedEvent}.
 	 */
-	protected void finishRefresh() {
+	protected void finishRefresh() { // Spring 应用上下文刷新完成阶段
 		// Clear context-level resource caches (such as ASM metadata from scanning).
-		clearResourceCaches();
+		clearResourceCaches(); // 清楚 Resourceloader 缓存
 
 		// Initialize lifecycle processor for this context.
-		initLifecycleProcessor();
+		initLifecycleProcessor(); // 初始化 LifecycleProcessor 对象
 
 		// Propagate refresh to lifecycle processor first.
 		getLifecycleProcessor().onRefresh();
 
 		// Publish the final event.
-		publishEvent(new ContextRefreshedEvent(this));
+		publishEvent(new ContextRefreshedEvent(this)); // 发布 Spring 应用上下文已刷新事件
 
 		// Participate in LiveBeansView MBean, if active.
-		LiveBeansView.registerApplicationContext(this);
+		LiveBeansView.registerApplicationContext(this); // 向 MBeanServer 托管 Live Beans
 	}
 
 	/**

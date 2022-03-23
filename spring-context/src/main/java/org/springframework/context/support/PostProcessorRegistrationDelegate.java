@@ -202,7 +202,7 @@ final class PostProcessorRegistrationDelegate {
 		List<BeanPostProcessor> internalPostProcessors = new ArrayList<>();
 		List<String> orderedPostProcessorNames = new ArrayList<>();
 		List<String> nonOrderedPostProcessorNames = new ArrayList<>();
-		for (String ppName : postProcessorNames) {
+		for (String ppName : postProcessorNames) { // postProcessorNames = priorityOrderedPostProcessors + orderedPostProcessorNames + nonOrderedPostProcessorNames
 			if (beanFactory.isTypeMatch(ppName, PriorityOrdered.class)) {
 				BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
 				priorityOrderedPostProcessors.add(pp);
@@ -228,7 +228,7 @@ final class PostProcessorRegistrationDelegate {
 			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
 			orderedPostProcessors.add(pp);
 			if (pp instanceof MergedBeanDefinitionPostProcessor) {
-				internalPostProcessors.add(pp);
+				internalPostProcessors.add(pp); // 将 orderedPostProcessorNames 中的 MergedBeanDefinitionPostProcessor 添加进来
 			}
 		}
 		sortPostProcessors(orderedPostProcessors, beanFactory);
@@ -240,7 +240,7 @@ final class PostProcessorRegistrationDelegate {
 			BeanPostProcessor pp = beanFactory.getBean(ppName, BeanPostProcessor.class);
 			nonOrderedPostProcessors.add(pp);
 			if (pp instanceof MergedBeanDefinitionPostProcessor) {
-				internalPostProcessors.add(pp);
+				internalPostProcessors.add(pp); // 将 nonOrderedPostProcessorNames 中的 MergedBeanDefinitionPostProcessor 添加进来
 			}
 		}
 		registerBeanPostProcessors(beanFactory, nonOrderedPostProcessors);
