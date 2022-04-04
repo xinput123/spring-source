@@ -60,11 +60,8 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.context.support.AbstractApplicationContext#refresh()
  */
 class ApplicationContextAwareProcessor implements BeanPostProcessor {
-
 	private final ConfigurableApplicationContext applicationContext;
-
 	private final StringValueResolver embeddedValueResolver;
-
 
 	/**
 	 * Create a new ApplicationContextAwareProcessor for the given context.
@@ -73,7 +70,6 @@ class ApplicationContextAwareProcessor implements BeanPostProcessor {
 		this.applicationContext = applicationContext;
 		this.embeddedValueResolver = new EmbeddedValueResolver(applicationContext.getBeanFactory());
 	}
-
 
 	@Override
 	@Nullable

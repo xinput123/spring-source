@@ -466,25 +466,25 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 		}
 
 		List<InjectionMetadata.InjectedElement> elements = new ArrayList<>();
-		Class<?> targetClass = clazz;
+		Class<?> targetClass = clazz; // 需要处理的类
 
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
-
+            // 通过反射获取该类所有的字段，遍历每一个字段，并通过 findAutowiredAnnotation() 判断每个字段所用的注解，如果所有的注解在 autowiredAnnotationTypes 集合中， 则返回auotowired相关属性
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
-					if (Modifier.isStatic(field.getModifiers())) {
+					if (Modifier.isStatic(field.getModifiers())) { // 校验autowired注解是否用在了static方法上
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static fields: " + field);
 						}
 						return;
 					}
-					boolean required = determineRequiredStatus(ann);
+					boolean required = determineRequiredStatus(ann); // 判断是否指定了required
 					currElements.add(new AutowiredFieldElement(field, required));
 				}
 			});
-
+			// 通过反射获取该类所有的方法，遍历每一个方法，并通过 findAutowiredAnnotation() 判断每个方法所用的注解，如果所有的注解在 autowiredAnnotationTypes 集合中， 则返回auotowired相关属性
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -506,6 +506,7 @@ public class AutowiredAnnotationBeanPostProcessor extends InstantiationAwareBean
 					}
 					boolean required = determineRequiredStatus(ann);
 					PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);
+					// 用@Autowired修饰的注解可能不止一个，因此都加在currElements这个容器里面，一起处理
 					currElements.add(new AutowiredMethodElement(method, required, pd));
 				}
 			});
