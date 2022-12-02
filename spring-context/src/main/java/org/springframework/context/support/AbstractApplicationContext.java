@@ -737,12 +737,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Initialize the MessageSource.
-	 * Use parent's if none defined in this context.
+	 * Initialize the MessageSource. 初始化 MessageSource
+	 * Use parent's if none defined in this context. 如果没有定义的话，就内建一个，使用父类上下文的数据
 	 */
 	protected void initMessageSource() {
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-		if (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) {
+		if (beanFactory.containsLocalBean(MESSAGE_SOURCE_BEAN_NAME)) { // containsLocalBean 只在当前里面去找
 			this.messageSource = beanFactory.getBean(MESSAGE_SOURCE_BEAN_NAME, MessageSource.class);
 			// Make MessageSource aware of parent MessageSource.
 			if (this.parent != null && this.messageSource instanceof HierarchicalMessageSource) {

@@ -544,7 +544,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #autowireConstructor
 	 */
 	protected Object doCreateBean(final String beanName, final RootBeanDefinition mbd, final @Nullable Object[] args)
-			throws BeanCreationException {
+			throws BeanCreationException { // doCreateBean 是创建 Bean 的开始
 
 		// Instantiate the bean. BeanWrapper 其实是我们的实例包装的对象
 		BeanWrapper instanceWrapper = null;
@@ -1147,7 +1147,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	/**
 	 * Create a new instance for the specified bean, using an appropriate instantiation strategy:
-	 * factory method, constructor autowiring, or simple instantiation.
+	 * factory method, constructor autowiring, or simple instantiation. 生成 bean 实例对象，具体哪种方式看配置
 	 * @param beanName the name of the bean
 	 * @param mbd the bean definition for the bean
 	 * @param args explicit arguments to use for constructor or factory method invocation
