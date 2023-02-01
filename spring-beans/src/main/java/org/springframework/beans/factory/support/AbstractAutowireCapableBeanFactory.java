@@ -1836,7 +1836,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param mbd the merged bean definition that the bean was created with
 	 * (can also be {@code null}, if given an existing bean instance)
 	 * @throws Throwable if thrown by init methods or by the invocation process
-	 * @see #invokeCustomInitMethod
+	 * @see #invokeCustomInitMethod 检查 bean 是否实现了 InitializingBean 或定义了自定义 init 方法，如果实现了则调用必要的回调。
 	 */
 	protected void invokeInitMethods(String beanName, final Object bean, @Nullable RootBeanDefinition mbd)
 			throws Throwable {
