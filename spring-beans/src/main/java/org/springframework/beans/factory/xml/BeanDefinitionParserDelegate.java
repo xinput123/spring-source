@@ -413,8 +413,8 @@ public class BeanDefinitionParserDelegate {
 	 */
 	@Nullable
 	public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable BeanDefinition containingBean) {
-		String id = ele.getAttribute(ID_ATTRIBUTE); // 获取 bean id
-		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE); // 获取 bean name
+		String id = ele.getAttribute(ID_ATTRIBUTE); // 解析 id 属性
+		String nameAttr = ele.getAttribute(NAME_ATTRIBUTE); // 解析 name 属性
 
 		List<String> aliases = new ArrayList<>();
 		if (StringUtils.hasLength(nameAttr)) { // 将 name 属性的定义按照 “逗号、分号、空格” 切分，形成一个 别名列表数组，如果你不定义 name 属性的话，就是空的了
@@ -441,7 +441,7 @@ public class BeanDefinitionParserDelegate {
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) { // 如果都没有设置 id 和 name，那么此时的 beanName 就会为 null，进入下面这块代码产生
 				try {
-					if (containingBean != null) {
+					if (containingBean != null) { // 如果不存在 beanName，那么根据 Spring 中提供的命名规则为当前 bean 生成对应的 beanName
 						beanName = BeanDefinitionReaderUtils.generateBeanName(
 								beanDefinition, this.readerContext.getRegistry(), true);
 					}
@@ -507,11 +507,11 @@ public class BeanDefinitionParserDelegate {
 		this.parseState.push(new BeanEntry(beanName));
 
 		String className = null;
-		if (ele.hasAttribute(CLASS_ATTRIBUTE)) {
+		if (ele.hasAttribute(CLASS_ATTRIBUTE)) { // 解析 class 属性
 			className = ele.getAttribute(CLASS_ATTRIBUTE).trim();
 		}
 		String parent = null;
-		if (ele.hasAttribute(PARENT_ATTRIBUTE)) {
+		if (ele.hasAttribute(PARENT_ATTRIBUTE)) { // 解析 parent 属性
 			parent = ele.getAttribute(PARENT_ATTRIBUTE);
 		}
 
@@ -519,9 +519,9 @@ public class BeanDefinitionParserDelegate {
 			AbstractBeanDefinition bd = createBeanDefinition(className, parent); // 创建 BeanDefinition，然后设置类信息
 			// 设置 BeanDefinition 的一堆属性，这些属性定义在 AbstractBeanDefinition 中
 			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
-			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
+			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));  // 提取 description
 			// 下面一堆是解析 <bean>......</bean> 内部的子元素，解析出来以后的信息都放到 bd 的属性中
-			parseMetaElements(ele, bd); // 解析 <meta />
+			parseMetaElements(ele, bd); // 解析元数据
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides()); // 解析 <lookup-method />
 			parseReplacedMethodSubElements(ele, bd.getMethodOverrides()); // 解析 <replaced-method />
 
@@ -651,16 +651,16 @@ public class BeanDefinitionParserDelegate {
 	 * Parse the meta elements underneath the given element, if any.
 	 */
 	public void parseMetaElements(Element ele, BeanMetadataAttributeAccessor attributeAccessor) {
-		NodeList nl = ele.getChildNodes();
+		NodeList nl = ele.getChildNodes(); // 获取当前节点的所有子元素
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
-			if (isCandidateElement(node) && nodeNameEquals(node, META_ELEMENT)) {
+			if (isCandidateElement(node) && nodeNameEquals(node, META_ELEMENT)) { // 提取 meta
 				Element metaElement = (Element) node;
 				String key = metaElement.getAttribute(KEY_ATTRIBUTE);
 				String value = metaElement.getAttribute(VALUE_ATTRIBUTE);
-				BeanMetadataAttribute attribute = new BeanMetadataAttribute(key, value);
+				BeanMetadataAttribute attribute = new BeanMetadataAttribute(key, value); // 使用 key value 构建 BeanMetadataAttribute
 				attribute.setSource(extractSource(metaElement));
-				attributeAccessor.addMetadataAttribute(attribute);
+				attributeAccessor.addMetadataAttribute(attribute); // 记录信息
 			}
 		}
 	}
@@ -1425,7 +1425,7 @@ public class BeanDefinitionParserDelegate {
 
 		// Decorate based on custom attributes first.
 		NamedNodeMap attributes = ele.getAttributes();
-		for (int i = 0; i < attributes.getLength(); i++) {
+		for (int i = 0; i < attributes.getLength(); i++) { // 遍历所有的属性，看看是否有适用于修饰的属性
 			Node node = attributes.item(i);
 			finalDefinition = decorateIfRequired(node, finalDefinition, containingBd);
 		}
@@ -1452,8 +1452,9 @@ public class BeanDefinitionParserDelegate {
 	public BeanDefinitionHolder decorateIfRequired(
 			Node node, BeanDefinitionHolder originalDef, @Nullable BeanDefinition containingBd) {
 
-		String namespaceUri = getNamespaceURI(node);
-		if (namespaceUri != null && !isDefaultNamespace(namespaceUri)) {
+		String namespaceUri = getNamespaceURI(node); // 获取自定义的标签命名
+		if (namespaceUri != null && !isDefaultNamespace(namespaceUri)) { // 对于非默认标签进行修饰
+			// 根据命名空间找到对应的处理器
 			NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 			if (handler != null) {
 				BeanDefinitionHolder decorated =

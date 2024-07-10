@@ -329,10 +329,10 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throw new BeanDefinitionStoreException(
 					"Detected cyclic loading of " + encodedResource + " - check your import definitions!");
 		}
-		try {
+		try { // 从 encodedResource 中获取已经封装的 Resource 对象并再次从 Resource 中获取其中的 inputStream
 			InputStream inputStream = encodedResource.getResource().getInputStream();
 			try {
-				InputSource inputSource = new InputSource(inputStream);
+				InputSource inputSource = new InputSource(inputStream); // 这个类不是来自于spring
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
@@ -446,7 +446,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * mode, even when something other than {@link #VALIDATION_AUTO} was set.
 	 * @see #detectValidationMode
 	 */
-	protected int getValidationModeForResource(Resource resource) {
+	protected int getValidationModeForResource(Resource resource) { // 获取对XML文件的验证格式
 		int validationModeToUse = getValidationMode();
 		if (validationModeToUse != VALIDATION_AUTO) {
 			return validationModeToUse;
@@ -511,10 +511,11 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		// 使用 DefaultBeanDefinitionDocumentReader 实例化 BeanDefinitionDocumentReader
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-		int countBefore = getRegistry().getBeanDefinitionCount();
-		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
-		return getRegistry().getBeanDefinitionCount() - countBefore;
+		int countBefore = getRegistry().getBeanDefinitionCount(); // 记录统计前 BeanDefinition 的加载个数
+		documentReader.registerBeanDefinitions(doc, createReaderContext(resource)); // 加载及注册 bean
+		return getRegistry().getBeanDefinitionCount() - countBefore; // 记录本次加载的 BeanDefinition 个数
 	}
 
 	/**

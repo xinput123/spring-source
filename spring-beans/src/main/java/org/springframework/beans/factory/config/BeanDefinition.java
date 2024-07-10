@@ -44,7 +44,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * Scope identifier for the standard singleton scope: {@value}.
 	 * <p>Note that extended bean factories might support further scopes.
 	 * @see #setScope
-	 * @see ConfigurableBeanFactory#SCOPE_SINGLETON
+	 * @see ConfigurableBeanFactory#SCOPE_SINGLETON 单例
 	 */
 	String SCOPE_SINGLETON = ConfigurableBeanFactory.SCOPE_SINGLETON;
 
@@ -59,7 +59,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 
 	/**
 	 * Role hint indicating that a {@code BeanDefinition} is a major part
-	 * of the application. Typically corresponds to a user-defined bean.
+	 * of the application. Typically corresponds to a user-defined bean. 角色：属于应用程序的bean
 	 */
 	int ROLE_APPLICATION = 0;
 
@@ -78,7 +78,7 @@ public interface BeanDefinition extends AttributeAccessor, BeanMetadataElement {
 	 * Role hint indicating that a {@code BeanDefinition} is providing an
 	 * entirely background role and has no relevance to the end-user. This hint is
 	 * used when registering beans that are completely part of the internal workings
-	 * of a {@link org.springframework.beans.factory.parsing.ComponentDefinition}.
+	 * of a {@link org.springframework.beans.factory.parsing.ComponentDefinition}. 角色：属于框架自身的bean
 	 */
 	int ROLE_INFRASTRUCTURE = 2;
 

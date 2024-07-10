@@ -300,7 +300,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 
 	/**
 	 * Process the given bean element, parsing the bean definition
-	 * and registering it with the registry.
+	 * and registering it with the registry. Bean 标签的解析及注册
 	 */
 	protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele); // 将 <bean/> 节点中的信息提取出来，然后封装到一个 BeanDefinitionHolder 中
